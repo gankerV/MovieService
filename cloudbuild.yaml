@@ -7,6 +7,7 @@ steps:
         'gcr.io/bookingfilm-463218/movie-service:$SHORT_SHA',
         '.'
       ]
+
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/bookingfilm-463218/movie-service:$SHORT_SHA']
 
@@ -16,9 +17,16 @@ steps:
       - -c
       - |
         gcloud container clusters get-credentials booking-cluster --zone asia-southeast1-a --project bookingfilm-463218
+
+        # Apply YAML trước khi update image
+        kubectl apply -f k8s/movie-deployment.yaml -n booking-system
+        kubectl apply -f k8s/movie-service.yaml -n booking-system
+
+        # Cập nhật image sau khi apply
         kubectl set image deployment/movie-deployment movie=gcr.io/bookingfilm-463218/movie-service:$SHORT_SHA -n booking-system
 
 images:
   - gcr.io/bookingfilm-463218/movie-service
+
 options:
   logging: CLOUD_LOGGING_ONLY
