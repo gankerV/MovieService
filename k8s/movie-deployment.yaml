@@ -17,7 +17,7 @@ spec:
         - name: movie
           image: gcr.io/bookingfilm-463218/movie-service
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
           env:
             - name: DB_HOST
               valueFrom:
